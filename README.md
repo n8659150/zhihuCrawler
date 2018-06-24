@@ -1,6 +1,4 @@
-# 知乎问题图片爬虫
-
-## nodejs版
+# 知乎问题图片爬虫  nodejs版
 
 ## nodejs + puppeteer
 
