@@ -6,7 +6,7 @@ let wait = (ms = 1000) => new Promise(resolve => setTimeout(() => resolve(), ms)
 
 (async () => {
   // const browser = await puppeteer.launch({ headless: false })
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
   // // 登录部分
@@ -37,26 +37,15 @@ let wait = (ms = 1000) => new Promise(resolve => setTimeout(() => resolve(), ms)
     await page.click('.QuestionMainAction');
     console.log(`'load all' button clicked`);
   }
-
   // 下拉加载，并且等待加载完成，重复n次
-  for(let i = 0; i < maxScrollCount; i++) {
+  for (let i = 0; i < maxScrollCount; i++) {
     console.log(`loading page ${i}`);
     await page.evaluate(() => {
-      window.scrollTo(0,document.body.scrollHeight);
+      window.scrollTo(0, document.body.scrollHeight);
     })
     console.log(`wait for content loading`);
     await wait();
   }
-  
-    
-    // 下滚5次
-    // (function(j){
-    //   for (let i = 0; i < j; i++) {
-    //     window.scrollTo(0,document.body.scrollHeight);
-    //   }
-    // })(10)
-
-
   const targetLink = await page.evaluate(() => {
     console.log(`formatting img links`)
     return [...document.querySelectorAll('noscript')].map(item => {
@@ -64,9 +53,6 @@ let wait = (ms = 1000) => new Promise(resolve => setTimeout(() => resolve(), ms)
       return srcLink
     })
   });
-
-  // const name = await page.evaluate(() => document.querySelector('.Avatar AppHeader-profileAvatar').innerText)
-
   console.log(targetLink);
   console.log(`grabbed ${targetLink.length} pics`);
   await browser.close();
