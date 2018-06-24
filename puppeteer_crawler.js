@@ -1,4 +1,9 @@
 const puppeteer = require('puppeteer');
+// 下拉加载图片的次数 (别太多不然营养跟不上:))
+const maxScrollCount = 10;
+// 等待下拉加载完成，默认1000ms,网络情况好可缩短,不佳可延长。
+let wait = (ms = 1000) => new Promise(resolve => setTimeout(() => resolve(), ms));
+
 (async () => {
   // const browser = await puppeteer.launch({ headless: false })
   const browser = await puppeteer.launch({ headless: false });
@@ -20,32 +25,29 @@ const puppeteer = require('puppeteer');
   // await page.waitForNavigation()
   // // 登录部分结束
 
-
-
-
+  // 爬虫执行部分
   await page.goto('https://www.zhihu.com/question/61235373');
+  console.log(`page reached`);
   await page.setViewport({
     width: 1920,
     height: 1080
   });
-  // 加载全部页面
-  // 当问题已关闭时，“显示全部”按钮默认不显示，所以需要判断一下
   let viewAllExists = await page.$('.QuestionMainAction');
   if (viewAllExists !== null) {
     await page.click('.QuestionMainAction');
+    console.log(`'load all' button clicked`);
   }
 
-  // 
-  await page.evaluate(() => {
-    
-    // 模拟鼠标往上回滚，触发剩余图片的加载
-    window.scrollTo(document.body.scrollHeight, 10);
-    
-    window.scrollTo(0,200000);
-    
-    
-    });
-    
+  // 下拉加载，并且等待加载完成，重复n次
+  for(let i = 0; i < maxScrollCount; i++) {
+    console.log(`loading page ${i}`);
+    await page.evaluate(() => {
+      window.scrollTo(0,document.body.scrollHeight);
+    })
+    console.log(`wait for content loading`);
+    await wait();
+  }
+  
     
     // 下滚5次
     // (function(j){
@@ -56,16 +58,18 @@ const puppeteer = require('puppeteer');
 
 
   const targetLink = await page.evaluate(() => {
+    console.log(`formatting img links`)
     return [...document.querySelectorAll('noscript')].map(item => {
       let srcLink = item.textContent.match(/src=[\'\"]?([^\'\"]*)[\'\"]?/i)[1];
       return srcLink
     })
-
   });
 
   // const name = await page.evaluate(() => document.querySelector('.Avatar AppHeader-profileAvatar').innerText)
 
   console.log(targetLink);
+  console.log(`grabbed ${targetLink.length} pics`);
+  await browser.close();
 
-  // await browser.close()
 })()
+
