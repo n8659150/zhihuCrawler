@@ -1,6 +1,4 @@
-# 知乎问题图片爬虫
-
-## python版
+# 知乎问题图片爬虫 - python版
 
 ## python + selenium
 
