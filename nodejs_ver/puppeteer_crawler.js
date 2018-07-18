@@ -6,11 +6,14 @@ const maxScrollCount = 10;
 // 等待下拉加载完成，默认1000ms,网络情况好可缩短,不佳可延长。
 let wait = (ms = 1000) => new Promise(resolve => setTimeout(() => resolve(), ms));
 
+//api /sister?questionId=88888888
+
 app.get('/sister', async (req, res) => {
-    // const browser = await puppeteer.launch({ headless: false })
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch()
+    console.log('launched');
+    // const browser = await puppeteer.launch();
     const page = await browser.newPage();
-  
+    console.log('new page created')
     // // 登录部分
     // await page.goto('http://zhihu.com');
     // // 视口宽度默认800*600，不设置视口宽度的话 无法点击页面右侧“登录”按钮
@@ -28,8 +31,11 @@ app.get('/sister', async (req, res) => {
     // // 登录部分结束
   
     // 爬虫执行部分
-    await page.goto('https://www.zhihu.com/question/61235373');
+    let questionId = req.query.questionId;
+    let URL = `https://www.zhihu.com/question/${questionId}`;
+    await page.goto(URL,{timeout:2000});
     console.log(`page reached`);
+    // await wait(2000);
     await page.setViewport({
       width: 1920,
       height: 1080
@@ -61,12 +67,9 @@ app.get('/sister', async (req, res) => {
     res.json(targetLink);
 })
 
-let server = app.listen(8081, function () {
+let server = app.listen(8089, function () {
 
-  let host = server.address().address
-  let port = server.address().port
-
-  console.log('服务器在8081端口启动');
+  console.log('服务器在8089端口启动');
 
 })
 
