@@ -1,6 +1,6 @@
 # 知乎问题图片爬虫
 
-## nodejs版
+## nodejs版 v2.0
 
 ## nodejs + ES6 + request-promise
 
