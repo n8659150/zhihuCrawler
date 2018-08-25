@@ -24,7 +24,7 @@ app.get('/sisterTitle', async (req, res) => {
   res.json(pageTitle);
 })
 
-//api /sisterImg?questionId=88888888
+//api /sisterImg?questionId=88888888&pageCount=3
 
 app.get('/sisterImg', async (req, res) => {
     const browser = await puppeteer.launch()
